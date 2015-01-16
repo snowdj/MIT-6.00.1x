@@ -1,4 +1,5 @@
 s = 'azcbobobegghakl'
+#s = 'abcde'
 
 start = 0
 pos = 1
@@ -11,6 +12,10 @@ if len(s) > 1:
         while True and pos < len(s):
             if ord(s[pos]) >= ord(s[pos-1]):
                 strLen += 1
+                if pos == len(s)-1:
+                    if strLen > maxLen:
+                        maxLen = strLen
+                        maxStart = start
                 pos += 1           
             else:
                 if strLen > maxLen:
