@@ -1,5 +1,4 @@
-s = 'azcbobobegghakl'
-#s = 'abcde'
+s = 'azcbobobegghikl'
 
 start = 0
 pos = 1
