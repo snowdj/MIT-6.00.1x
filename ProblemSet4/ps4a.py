@@ -76,9 +76,21 @@ def getWordScore(word, n):
     n: integer (HAND_SIZE; i.e., hand size required for additional points)
     returns: int >= 0
     """
-    # TO DO ... <-- Remove this comment when you code this function
+    
+    lenWord = len(word)
+    allLetterAdder = 0
+    letterValue = 0
+    
+    # Give 50 additional points if all letters are used
+    if lenWord == n:
+        allLetterAdder = 50
+    
+    # Loop through each letter in the word and get the tally the value
+    for char in word:
+        letterValue += SCRABBLE_LETTER_VALUES.get(char)
 
-
+    # return the total score
+    return letterValue*lenWord + allLetterAdder
 
 #
 # Problem #2: Make sure you understand how this function works and what it does!
@@ -147,9 +159,16 @@ def updateHand(hand, word):
     hand: dictionary (string -> int)    
     returns: dictionary (string -> int)
     """
-    # TO DO ... <-- Remove this comment when you code this function
-
-
+    # Make a copy of the original dictionary
+    newHand = hand.copy()
+    
+    # Loop through each letter of the word, subtracting 1 from the value each
+    # time the letter occurs
+    
+    for char in word:
+        newHand[char] = newHand.get(char,0) - 1
+    
+    return newHand
 
 #
 # Problem #3: Test word validity
@@ -165,9 +184,26 @@ def isValidWord(word, hand, wordList):
     hand: dictionary (string -> int)
     wordList: list of lowercase strings
     """
-    # TO DO ... <-- Remove this comment when you code this function
+    
+    result = True
+    # Make a copy of the original dictionary
+    handCopy = hand.copy()
+    
+    # Check if word in wordList.  If not, return False.  Otherwise check each
+    # letter in word to determine if hand has a zero value for that letter.  If
+    # any of the letters correspond to a zero value in hand, return False
+    if word not in wordList:
+        result = False
+        return result
+    else:
+        for char in word:
+            if handCopy.get(char,0) == 0:
+                result = False
+                return result
+            else:
+                handCopy[char] -= 1    
 
-
+    return result
 #
 # Problem #4: Playing a hand
 #
@@ -179,9 +215,11 @@ def calculateHandlen(hand):
     hand: dictionary (string-> int)
     returns: integer
     """
-    # TO DO... <-- Remove this comment when you code this function
+    handLen = 0
+    for x in hand:
+        handLen += hand.get(x,0)
 
-
+    return handLen
 
 def playHand(hand, wordList, n):
     """
