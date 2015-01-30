@@ -243,35 +243,56 @@ def playHand(hand, wordList, n):
       n: integer (HAND_SIZE; i.e., hand size required for additional points)
       
     """
-    # BEGIN PSEUDOCODE <-- Remove this comment when you code this function; do your coding within the pseudocode (leaving those comments in-place!)
     # Keep track of the total score
+    score = 0
+    lenHand = len(hand)
     
     # As long as there are still letters left in the hand:
-    
+    while lenHand != 0:
+            
         # Display the hand
+        print('Current Hand: '),
+        displayHand(hand),
         
         # Ask user for input
+        inputWord = raw_input("""Enter word, or a "." to indicate that you are finished: """)
         
         # If the input is a single period:
-        
+        if inputWord == ".":
+                    
             # End the game (break out of the loop)
-
+            break
             
         # Otherwise (the input is not a single period):
+        else:
         
             # If the word is not valid:
+            if not isValidWord(inputWord, hand, wordList):
             
                 # Reject invalid word (print a message followed by a blank line)
+                print('Invalid word, please try again.\n')
 
             # Otherwise (the word is valid):
+            else:
 
                 # Tell the user how many points the word earned, and the updated total score, in one line followed by a blank line
+                inputWordScore = getWordScore(inputWord, n)
+                score += inputWordScore
+                print("\""+inputWord+"\""+" earned "+str(inputWordScore)+" points."),
+                print("Total: "+str(score)+" points\n")
                 
                 # Update the hand 
-                
+                hand = updateHand(hand, inputWord)
+                tempSum = 0
+                for x in hand:
+                    tempSum += hand.get(x,0)
+                lenHand = tempSum
 
     # Game is over (user entered a '.' or ran out of letters), so tell user the total score
-
+    if lenHand == 0:
+        print('Ran out of letters. Total score: '+ str(score)+ " points.")
+    else:
+        print("""Goodbye! Total score: """ + str(score)+ " points.")
 
 #
 # Problem #5: Playing a game
@@ -289,12 +310,31 @@ def playGame(wordList):
  
     2) When done playing the hand, repeat from step 1    
     """
-    # TO DO ... <-- Remove this comment when you code this function
-    print "playGame not yet implemented." # <-- Remove this line when you code the function
-   
-
-
-
+    answer=""
+    gamePlayed = False
+    
+    while answer !="e":
+        print("Enter n to deal a new hand,"),
+        print("r to replay the last hand,"),
+        answer = raw_input("or e to end game: ")
+        if answer == "e":
+            return None
+        elif answer == "n":
+            hand = dealHand(HAND_SIZE)
+            handCopy = hand.copy()
+            gamePlayed = True
+            playHand(hand, wordList, HAND_SIZE)
+            print
+        elif answer == "r":
+            if gamePlayed == False:
+                print("You have not played a hand yet. Please play a hand first!\n")
+                continue
+            else:
+                playHand(handCopy, wordList, HAND_SIZE)
+        elif answer !="n" or answer!="r" or answer!="e":
+            print("Invalid command.")
+            continue
+    
 #
 # Build data structures used for entire session and play game
 #
