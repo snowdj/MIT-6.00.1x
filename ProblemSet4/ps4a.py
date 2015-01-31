@@ -2,7 +2,7 @@
 #
 # The 6.00 Word Game
 # Created by: Kevin Luu <luuk> and Jenna Wiens <jwiens>
-# Modified by: Sarina Canelake <sarina>
+# Modified by: Mark Lytell <lytemar>
 #
 
 import random
