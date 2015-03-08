@@ -41,7 +41,9 @@ class edx(object):
         The method does not return a value.
         """
         #   fill in code to set the grade
-        pass
+        for i in range(len(self.myCourses)):
+            if self.myCourses[i].courseName == course:
+                self.myCourses[i].setGrade(grade)
 
     def getGrade(self, course="6.02x"):
         """
@@ -53,7 +55,11 @@ class edx(object):
         If `course` was not part of the initialization, returns -1.
         """
         #   fill in code to get the grade
-        pass
+        result = -1
+        for i in range(len(self.myCourses)):
+            if self.myCourses[i].courseName == course:
+                return self.myCourses[i].getGrade()
+        return result
 
     def setPset(self, pset, score, course="6.00x"):
         """
@@ -68,7 +74,9 @@ class edx(object):
         and no error is thrown.
         """
         #   fill in code to set the pset
-        pass
+        for i in range(len(self.myCourses)):
+            if self.myCourses[i].courseName == course:
+                self.myCourses[i].setPset(pset, score)
 
     def getPset(self, pset, course="6.00x"):
         """
@@ -80,7 +88,11 @@ class edx(object):
         If `course` was not part of the initialization, returns -1.
         """
         #   fill in code to get the pset
-        pass
+        result = -1
+        for i in range(len(self.myCourses)):
+            if self.myCourses[i].courseName == course:
+                return self.myCourses[i].getPset(pset)
+        return result
 
 
 edX = edx( ["6.00x","6.01x","6.02x"] )

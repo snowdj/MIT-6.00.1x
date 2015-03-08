@@ -94,7 +94,58 @@ class Family(object):
         """
         mom_node = self.names_to_nodes[mother]
         child_node = self.names_to_nodes[kid]
-        return child_node.is_parent(mom_node)   
+        return child_node.is_parent(mom_node)
+    
+    def is_sibling(self, child1, child2):
+        """ Returns True if two people are siblings """
+        child1_node = self.names_to_nodes[child1]
+        child2_node = self.names_to_nodes[child2]
+        return child1_node.get_parent() == child2_node.get_parent()
+    
+    def get_generation(self, child):
+        """ 
+        Returns the generation from root (zeroth generation)
+        """
+        generation = 1
+        foundRoot = False
+        child_node = self.names_to_nodes[child]
+        while not foundRoot:
+            if child_node.get_parent() == None:
+                generation = 0
+                foundRoot = True
+            elif child_node.get_parent() == self.root:
+                foundRoot = True
+            else:
+                generation += 1
+                temp = child_node.get_parent()
+                child_node = temp
+        return generation
+    def are_direct_descendants(self, p1, p2):
+        """
+        Returns True if two family members are direct descendants
+        """
+        gen_p1 = self.get_generation(p1)
+        gen_p2 = self.get_generation(p2)
+        p1_node = self.names_to_nodes[p1]
+        p2_node = self.names_to_nodes[p2]
+        
+        # if same generation, then not direct descendants
+        if gen_p1 == gen_p2:
+            return False
+        # at one generation apart, determine if parent-child relationship exists
+        elif abs(gen_p1 - gen_p2) == 1:
+            return self.is_parent(p1, p2) or self.is_parent(p2, p1)
+        # otherwise move to parent of lower generation
+        else:
+            if gen_p1 < gen_p2:
+                p2_node = p2_node.get_parent()
+                temp = p2_node.name
+                return self.are_direct_descendants(p1,temp)
+            else:
+                p1_node = p1_node.get_parent()
+                temp = p1_node.name
+                return self.are_direct_descendants(temp,p2)
+         
 
     def is_child(self, kid, mother):
         """
@@ -130,8 +181,67 @@ class Family(object):
           distance from each node to their common ancestor.
         """
         
-        ## YOUR CODE HERE ####
-        raise NotImplementedError()
+        # convert names to Member nodes
+        a_node = self.names_to_nodes[a]
+        b_node = self.names_to_nodes[b]
+        
+        # initialization
+        gen_a = self.get_generation(a)
+        gen_b = self.get_generation(b)
+        degRemoved = abs(gen_a - gen_b)
+        
+        # function to calculate the cousinType for same generation people
+        def calcSameGenCousin(a, b):
+            a_node = self.names_to_nodes[a]
+            b_node = self.names_to_nodes[b]
+            cousinType = 1
+            gen_a = self.get_generation(a)
+            for i in range(gen_a):
+                if self.is_sibling(a_node.get_parent().name, b_node.get_parent().name):
+                    break
+                else:
+                    cousinType += 1
+                    a_node = a_node.get_parent()
+                    b_node = b_node.get_parent()
+            return cousinType
+        
+        # a and b are the same node
+        if a_node == b_node:
+            cousinType = -1
+            degRemoved = 0
+        
+        # a and b are direct descendants
+        elif self.are_direct_descendants(a, b):
+            cousinType = -1
+ 
+        # a and b are siblings
+        elif self.is_sibling(a, b):
+            cousinType = 0
+            degRemoved = 0
+        
+        # a and b in same generation but not siblings
+        elif gen_a == gen_b and not self.is_sibling(a, b):
+            cousinType = calcSameGenCousin(a, b)
+       
+        # a and b different generations, determine if ancestors at same generation
+        # are siblings
+        else:
+            if gen_a < gen_b:
+                fixed = a
+                var = b
+            else:
+                fixed = b
+                var = a
+            var_node = self.names_to_nodes[var]
+            for i in range(degRemoved):
+                var_node = var_node.get_parent()
+            var = var_node.name
+            if self.is_sibling(var,fixed):
+                cousinType = calcSameGenCousin(var, fixed)-1
+            else:
+                cousinType = calcSameGenCousin(var, fixed)
+                 
+        return (cousinType, degRemoved)
 
 
 f = Family("a")
